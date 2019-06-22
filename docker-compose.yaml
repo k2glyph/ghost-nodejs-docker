@@ -16,7 +16,7 @@ services:
   ghost:
     image: ghost:latest
     environment:
-      # url: ghost-auzmor.com
+      # url: https://ghost-auzmor.com/
       database__client: mysql
       database__connection__host: db
       database__connection__user: ghost
