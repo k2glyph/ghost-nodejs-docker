@@ -1,0 +1,49 @@
+version: "2.0"
+
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    environment: 
+      MYSQL_ROOT_PASSWORD: nodejsghost
+      MYSQL_DATABASE: DevOps_Assignment
+      MYSQL_USER: ghost
+      MYSQL_PASSWORD: ghost@123
+    ports:
+    - "3306:3306"
+    volumes: 
+      - ghost-db:/var/lib/mysql
+  ghost:
+    image: ghost:latest
+    environment:
+      # url: ghost-auzmor.com
+      database__client: mysql
+      database__connection__host: db
+      database__connection__user: ghost
+      database__connection__password: ghost@123
+      database__connection__database: DevOps_Assignment
+    volumes:
+      - ./public_html:/var/lib/ghost/content
+    depends_on:
+      - db
+    links:
+      - db
+  nginx:
+    image: nginx:latest
+    ports:
+        - '80:80'
+        - "443:443"
+    volumes:
+        - ./nginx:/etc/nginx/conf.d
+        - ./ssl:/etc/ssl
+        - ./logs/nginx:/var/log/nginx
+        - ./public_html:/var/www/html
+    links:
+        - ghost
+    depends_on:
+      - "db"
+      - "ghost"
+    restart: always
+volumes:
+  ghost-db:
+ 
